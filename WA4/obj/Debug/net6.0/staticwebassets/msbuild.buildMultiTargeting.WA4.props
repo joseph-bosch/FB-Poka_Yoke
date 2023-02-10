@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\WA4.props" />
+</Project>

@@ -1,0 +1,175 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "首页";
+    int count = 0;
+    List<double> PN = new List<double>();
+    string under = "_";
+
+}
+
+<div >
+    <div class="row row-pad">
+        <div class="col-4">
+            <h4 class="h2 align">生产线： </h4>
+        </div>
+        @foreach (var obj in Model.Take(1))
+        {
+            <div class="col-6 align-content-center">
+                <h4 class="h2 align">成品料号： <b>@obj.MaterialNumber</b> </h4>
+            </div>
+        }
+    </div>
+
+    <br />
+
+
+    <div class="container">
+        <div class="inline-block-column">
+            <label class="h3">当前零部件：</label>
+            <div class="box1 parent inline-block-column">
+                <h3 class="column2 inline-block-column">@ViewBag.check9</h3>
+                <p class="circle column1 inline-block-column" style="@ViewBag.check1"> </p>
+
+            </div>    
+        </div>
+        <div class="">
+            <div id="count" class="h33 box2 inline-block-column">
+
+
+                <h33><b>@ViewBag.check3</b> of <span id="sumAll">@ViewBag.check4</span></h33><p></p>
+                    <span id="updateCount" hidden>@ViewBag.update</span>
+            
+            
+            </div><div class="inline-block-column" style="align-self:center;"><button class=" box3" onclick="decrement()">-</button><button class=" box3" onclick="increment()">+</button></div>
+        </div>
+    </div>
+    <br />
+
+    
+    @*<div>
+        <button type="submit" class="btn btn-primary">Update Database</button>
+    </div>*@
+    <br />
+    <label class="h4">零部件信息识别：</label>
+    <div id="bodlist" class="container">
+       
+        @foreach (var obj in Model)
+        {
+
+            <label>@DateTime.Now</label>
+            PN.Add(obj.ComponentNumber);
+            @if (ViewBag.check6.Contains(obj.ComponentNumber))
+            {
+                <label hidden>@ViewBag.check6[count]</label>
+                @if (ViewBag.check7.Contains(obj.ComponentNumber))
+                {
+                    <div class="box">
+
+                        <div class="parent">
+                            <h3 class="column inline-block-column">PN - @obj.ComponentNumber </h3>
+                            <l class="circle-comp column1 inline-block-column" style="@ViewBag.check2"></l>
+                        </div>
+
+                        <div class="">
+                            <p class="column">物料描述 - @obj.ComponentDescription</p>
+
+                            <label class="switch">
+                                <input id="changeKnob" type="checkbox" checked>
+                                <span id="@obj.ComponentNumber@under@count" class="slider round" onclick="sendmsg()"></span>
+                            </label>
+
+                        </div>
+                    </div>
+                    count += 1;
+                }
+                else
+                {
+                    <div class="box">
+
+                        <div class="parent">
+                            <h3 class="column inline-block-column">PN - @obj.ComponentNumber </h3>
+                            <l class="circle-comp column1 inline-block-column"></l>
+                        </div>
+
+                        <div id="knob" class="">
+                            <p class="column">物料描述 - @obj.ComponentDescription</p>
+                            <label id="knob" class="switch" >
+
+                                <input id="changeKnob" type="checkbox" checked>
+                                <span id="@obj.ComponentNumber" class="slider round" onclick="sendmsg(); reply_clicked()"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                }
+            } else
+            {
+                
+                @if (ViewBag.check7.Contains(obj.ComponentNumber))
+                {
+                    <div class="box">
+
+                        <div class="parent">
+                            <h3 class="column inline-block-column">PN - @obj.ComponentNumber </h3>
+                            <l class="circle-comp column1 inline-block-column" style="@ViewBag.check2"></l>
+                        </div>
+
+                        <div class="">
+                            <p class="column">物料描述 - @obj.ComponentDescription</p>
+
+                            <label class="switch">
+                                <input id="changeKnob" type="checkbox">
+                                <span id="@obj.ComponentNumber@under@count" class="slider round" onclick="sendmsg()"></span>
+                            </label>
+
+                        </div>
+                    </div>
+                    count += 1;
+                }
+                else
+                {
+                    <div class="box">
+
+                        <div class="parent">
+                            <h3 class="column inline-block-column">PN - @obj.ComponentNumber </h3>
+                            <l class="circle-comp column1 inline-block-column"></l>
+                        </div>
+
+                        <div id="knob" class="">
+                            <p class="column">物料描述 - @obj.ComponentDescription</p>
+                            <label id="knob" class="switch">
+
+                                <input id="changeKnob" type="checkbox" >
+                                <span id="@obj.ComponentNumber" class="slider round" onclick="sendmsg()"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                }
+            }
+            @*
+        <div class="box">
+            <img src="~/img/6.jpg" />
+            <h3>Part Number 6</h3>
+            <p>Short details shown here to user</p>
+            <a href="#" class="btn">See Details</a>
+        </div>*@
+}
+
+    </div>
+
+    <br /><br />
+
+    <label></label>
+    
+</div>
+<script>
+    
+</script>
+@section Scripts{
+        
+    @{
+        <partial name="_ValidationScriptsPartial"></partial>
+    }
+}
