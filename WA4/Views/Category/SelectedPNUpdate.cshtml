@@ -8,7 +8,7 @@
 
 }
 
-<div >
+<div>
     <div class="row row-pad">
         <div class="col-4">
             <h4 class="h2 align">生产线： </h4>
@@ -31,37 +31,37 @@
                 <h3 id="topUpdate" class="column2 inline-block-column">@ViewBag.check9</h3>
                 <p class="circle column1 inline-block-column" style="@ViewBag.check1"> </p>
 
-            </div>    
+            </div>
         </div>
         <div class="">
             <div id="count" class="h33 box2 inline-block-column">
 
 
                 <h33><b>@ViewBag.check3</b> of <span id="sumAll">@ViewBag.check4</span></h33><p></p>
-                    <span id="updateCount" hidden>@ViewBag.update</span>
-            
-            
+                <span id="updateCount" hidden>@ViewBag.update</span>
+
+
             </div><div class="inline-block-column" style="align-self:center;"><button class=" box3" onclick="decrement()">-</button><button class=" box3" onclick="refresh()">+</button></div>
         </div>
     </div>
     <br />
 
-    
+
     @*<div>
-        <button type="submit" class="btn btn-primary">Update Database</button>
+    <button type="submit" class="btn btn-primary">Update Database</button>
     </div>*@
     <br />
     <div>
-        <form method="post" asp-action="Update">
-            <label class="h3" for="addNum" style="align-content:center;">人工补充：</label>
-            <input name="AddManual" rows="2" id="addNum" class="box1" style="margin-left: 60px; font-size: 20px;" />
-            <button id="AddBtn" type="submit" class="btn btn-primary" value="Submit" style="padding-bottom: 10px; margin-bottom: 20px; text-align:center;">提交</button>
-        </form>
+
+        <label class="h3" for="addNum" style="align-content:center;">人工补充：</label>
+        <input rows="2" id="addNum" class="box1" style="margin-left: 60px; font-size: 20px;" />
+        <button type="submit" class="btn btn-primary" value="Submit" style="padding-bottom: 10px; margin-bottom: 20px; text-align:center;" onclick="AddManual()">提交</button>
+
     </div>
     <br /><br />
     <label class="h4">零部件信息识别：</label>
     <div id="bodlist" class="container">
-       
+
         @foreach (var obj in Model)
         {
 
@@ -102,7 +102,7 @@
 
                         <div id="knob" class="">
                             <p class="column">物料描述 - @obj.ComponentDescription</p>
-                            <label id="knob" class="switch" >
+                            <label id="knob" class="switch">
 
                                 <input id="changeKnob" type="checkbox" checked>
                                 <span id="@obj.ComponentNumber" class="slider round" onclick="sendmsg(); reply_clicked()"></span>
@@ -111,9 +111,10 @@
 
                     </div>
                 }
-            } else
+            }
+            else
             {
-                
+
                 @if (ViewBag.check7.Contains(obj.ComponentNumber))
                 {
                     <div class="box">
@@ -148,7 +149,7 @@
                             <p class="column">物料描述 - @obj.ComponentDescription</p>
                             <label id="knob" class="switch">
 
-                                <input id="changeKnob" type="checkbox" >
+                                <input id="changeKnob" type="checkbox">
                                 <span id="@obj.ComponentNumber" class="slider round" onclick="sendmsg()"></span>
                             </label>
                         </div>
@@ -158,25 +159,25 @@
             }
             @*
         <div class="box">
-            <img src="~/img/6.jpg" />
-            <h3>Part Number 6</h3>
-            <p>Short details shown here to user</p>
-            <a href="#" class="btn">See Details</a>
+        <img src="~/img/6.jpg" />
+        <h3>Part Number 6</h3>
+        <p>Short details shown here to user</p>
+        <a href="#" class="btn">See Details</a>
         </div>*@
-}
+        }
 
     </div>
 
     <br /><br />
 
     <label></label>
-    
+
 </div>
 <script>
-    
+
 </script>
 @section Scripts{
-        
+
     @{
         <partial name="_ValidationScriptsPartial"></partial>
     }

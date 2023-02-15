@@ -12,6 +12,8 @@ changedId = "";
 
 
 const count = 1;
+setInterval('refresh()', 1000);
+setInterval('clear()', 10000);
 
 function reply_clicked() {
     //alert(clicked_id);
@@ -20,6 +22,68 @@ function reply_clicked() {
     alert("here");
 
 }
+
+
+function AddManual() {
+    //alert(clicked_id);
+    //changedId = clicked_id;
+    manual_Input = document.getElementById('addNum').value;
+    var model = new Object();
+    model.X3 = manual_Input
+
+    $.ajax({
+        type: "POST",
+        url: "AddManual",
+        dataType: "json",
+
+        data: { data1: model },
+        success: function (data) {
+            alert(data);
+        },
+        fail: function (errMsg) {
+            alert(errMsg);
+        }
+    });
+    alert(manual_Input);
+    $.ajax({
+        url: "AddManual",
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // process the data coming back
+            document.getElementById('topUpdate').innerHTML = data;
+            alert(data);
+
+        },
+    });
+    //refresh();
+
+}
+
+
+function refresh() {
+    //alert("here");
+    //window.location.reload();
+
+    $.ajax({
+        url: "GetCurrent",
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // process the data coming back
+            document.getElementById('topUpdate').innerHTML = data;
+            //alert(data);
+            
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //alert(xhr.status);
+            //alert(thrownError);
+            //alert(item)
+        }
+    });
+    
+}
+
 
 function sendmsg() {
     var model = new Object();
@@ -68,4 +132,24 @@ function decrement() {
     document.getElementById('sumAll').innerHTML = parseInt(x) - 1;
 }
 
+function clear() {
+    const ManualInput = document.getElementById('addNum');
+
+    // 👇️ clear input field
+    ManualInput.value = '';
+}
+
+
+
+const btn = document.getElementById('AddBtn');
+
+btn.addEventListener('keyup', function handleClick(event) {
+    // 👇️ if you are submitting a form (prevents page reload)
+    //event.preventDefault();
+
+    const ManualInput = document.getElementById('addNum');
+
+    // 👇️ clear input field
+    ManualInput.value = '';
+});
 

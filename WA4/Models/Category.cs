@@ -7,6 +7,7 @@ namespace WA4.Models
     {
         public string X1 { get; set; }
         public string X2 { get; set; }
+        public string X3 { get; set; }
     };
     public class Category
     {

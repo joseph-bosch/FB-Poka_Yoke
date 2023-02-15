@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.OracleClient;
 using System.IO.Ports;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace WA4.Controllers
 {
@@ -26,14 +27,18 @@ namespace WA4.Controllers
         public List<double> testlist = new List<double>();
         private readonly ApplicationDbContext _db;
         public static string pn_No;
-        public IEnumerable<Category> categoryFromDb;
-        
+        //public IEnumerable<Category> categoryFromDb;
+        IEnumerable<Category> newpageList;
+        IEnumerable<Category> pageList;
+
+
 
         public CategoryController(ApplicationDbContext db)
         {
             _db = db;
+            
         }
-
+        //public IEnumerable<Category> categoryFromDb = _db.Categories1;
         public IActionResult Index()
         {
             getPorts();
@@ -41,13 +46,16 @@ namespace WA4.Controllers
             return View(objCategoryList);
         }
 
-
+       
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SelectedPN(String nameobj)
         {
+
             
             pn_No= nameobj;
+            //Taskdatabas();
             //_serialPort.PortName = "COM3";
             //_serialPort.BaudRate = 115200;
             //_serialPort.Parity = Parity.None;
@@ -55,7 +63,7 @@ namespace WA4.Controllers
             //_serialPort.StopBits = StopBits.One;
             //_serialPort.Encoding = "UTF-8";
 
-            
+
             // Set the read/write timeouts
             //_serialPort.ReadTimeout = 500;
             _serialPort.WriteTimeout = 500;
@@ -76,57 +84,105 @@ namespace WA4.Controllers
             }
 
             ViewBag.check9 = codeValue;
-            List <double> newList = new List<double>();
+            List<double> newList = new List<double>();
             var num = 0;
             var bill = 4;
+            List<double> duplicates = new List<double>();
 
-
-
-
-            using (ApplicationDbContext _db = new() )
+            if (pageList is not null)
             {
-                categoryFromDb = _db.Categories1.Where(j => j.MaterialNumber == nameobj);
-            
 
-                foreach (var obj in categoryFromDb) {
+                var myDb = pageList.Where(j => j.MaterialNumber == nameobj).ToList();
+
+
+                foreach (var obj in myDb)
+                {
                     newList.Add(obj.ComponentNumber);
                 }
-            num = newList.Count;
-            var duplicates = newList.GroupBy(x => x)
-                            .SelectMany(g => g.Skip(1))
-                            .Distinct()
-                            .ToList();
-            if (changeState == "false")
-            {
-                num -= 1;
+                num = newList.Count;
+                duplicates = newList.GroupBy(x => x)
+                                .SelectMany(g => g.Skip(1))
+                                .Distinct()
+                                .ToList();
+                if (changeState == "false")
+                {
+                    num -= 1;
+                }
+
+                if (bill == 1)
+                {
+                    check = "background-color: #00000;";
+
+                }
+                else
+                {
+                    check = "background-color: #ff0000;";
+                }
+
+                ViewBag.check1 = check;
+                //testlist.Add(Convert.ToDouble(data1.X2));
+                ViewBag.check1 = check;
+                ViewBag.check2 = "background-color: #00FF00;";
+                ViewBag.check3 = 3;
+                ViewBag.check4 = num;
+                //ViewBag.check5 = '';
+                ViewBag.update = num;
+                changeValue = num;
+                ViewBag.check6 = testlist;
+                ViewBag.check7 = duplicates;
+
+                return View("SelectedPNUpdate.html", pageList);
             }
 
-            if (bill == 1)
+            else
             {
-                check = "background-color: #00000;";
+                
 
-            } else
-            {
-                check = "background-color: #ff0000;";
+                pageList = _db.Categories1.Where(j => j.MaterialNumber == nameobj).ToList();
+
+
+                foreach (var obj in pageList)
+                {
+                    newList.Add(obj.ComponentNumber);
+                }
+                num = newList.Count;
+                duplicates = newList.GroupBy(x => x)
+                                .SelectMany(g => g.Skip(1))
+                                .Distinct()
+                                .ToList();
+                if (changeState == "false")
+                {
+                    num -= 1;
+                }
+
+                if (bill == 1)
+                {
+                    check = "background-color: #00000;";
+
+                }
+                else
+                {
+                    check = "background-color: #ff0000;";
+                }
+
+                ViewBag.check1 = check;
+                //testlist.Add(Convert.ToDouble(data1.X2));
+                ViewBag.check1 = check;
+                ViewBag.check2 = "background-color: #00FF00;";
+                ViewBag.check3 = 3;
+                ViewBag.check4 = num;
+                //ViewBag.check5 = '';
+                ViewBag.update = num;
+                changeValue = num;
+                ViewBag.check6 = testlist;
+                ViewBag.check7 = duplicates;
+
+
+
+                //return View(pageList);
+
             }
-            
-            ViewBag.check1 = check;
-            //testlist.Add(Convert.ToDouble(data1.X2));
-            ViewBag.check1 = check;
-            ViewBag.check2 = "background-color: #00FF00;";
-            ViewBag.check3 = 3;
-            ViewBag.check4 = num;
-            //ViewBag.check5 = '';
-            ViewBag.update = num;
-            changeValue = num;
-            ViewBag.check6 = testlist;
-            ViewBag.check7 = duplicates;
-
-
-
-
-            return View( categoryFromDb );
-            }
+            return View("SelectedPN", pageList);
         }
         
         //GET
@@ -305,21 +361,40 @@ namespace WA4.Controllers
            
 
         }
+        public ActionResult GetCurrent()
+        {
+            var compNum = codeValue;
+            return Json(compNum, new System.Text.Json.JsonSerializerOptions());
+        }
 
         public void mySerialPort_Data(object sender, SerialDataReceivedEventArgs e)
-        {            
-            try
+        {
+            if (_serialPort.ReadExisting() != null)
             {
+                newpageList = _db.Categories1;
                 string data = _serialPort.ReadExisting();
                 barcode = data.Split(";");
-                codeValue = barcode[0].Substring(barcode[0].IndexOf(":") +1);
-                SelectedPN(pn_No);
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine(ex);
+                codeValue = barcode[0].Substring(barcode[0].IndexOf(":") + 1);
+                GetCurrent();
+                
+
+                //SelectedPN(pn_No);
             }
             
+            //_serialPort.Close();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Action Update(string AddManual)
+        {
+            codeValue = AddManual;
+            //GetCurrent();
+            //var obj = _db.Categories1.Find(SearchPhrase);
+            SelectedPN(pn_No);
+
+            return null;
+
         }
 
 
